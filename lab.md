@@ -47,7 +47,6 @@ certutil.exe -dsPublish -f "C:\BEDROCK-ROOT.crt" RootCA
 ```
 
 ```powershell
-certutil.exe –addstore –f root "C:\BEDROCK-ROOTBedrock Root Certificate Authority.crt"
 certutil.exe –addstore –f root "C:\BEDROCK-ROOT.crl"
 ```
 
