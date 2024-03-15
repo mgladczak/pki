@@ -43,7 +43,7 @@ certutil -crl
 ### 7. Publish Offline Root CA Certificate
 
 ```powershell
-certutil.exe -dsPublish -f "C:\BEDROCK-ROOT.crl" RootCA
+certutil.exe -dsPublish -f "C:\BEDROCK-ROOT.crt" RootCA
 ```
 
 ```powershell
