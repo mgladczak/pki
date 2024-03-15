@@ -1,20 +1,20 @@
 # LAB
 
-## Offline Root CA
+## 1. Offline Root CA
 
-### Install ADCS Role for Offline Root CA
+### 2. Install ADCS Role for Offline Root CA
 
 ```powershell
 Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools
 ```
 
-### Configure Offline Root CA
+### 3. Configure Offline Root CA
 
 ```powershell
 Install-AdcsCertificationAuthority -CAType StandaloneRootCA -CACommonName "Bedrock Root Certificate Authority" -KeyLength 4096 -HashAlgorithm SHA256 -CryptoProviderName "RSA#Microsoft Software Key Storage Provider" -ValidityPeriod Years -ValidityPeriodUnits 20 -Force
 ```
 
-### Post Configuration of Offline Root CA
+### 4. Post Configuration of Offline Root CA
 
 ```powershell
 $crllist = Get-CACrlDistributionPoint; foreach ($crl in $crllist) {Remove-CACrlDistributionPoint $crl.uri -Force};
@@ -32,15 +32,15 @@ certutil.exe -setreg CA\AuditFilter 127
 Restart-Service certsvc
 ```
 
-### Publish new CRL
+### 5. Publish new CRL
 
 ```powershell
 certutil -crl
 ```
 
-## Subordinate CA
+## 6. Subordinate CA
 
-### Publish Offline Root CA Certificate
+### 7. Publish Offline Root CA Certificate
 
 ```powershell
 certutil.exe -dsPublish -f "C:\BEDROCK-ROOT.crl" RootCA
@@ -51,25 +51,25 @@ certutil.exe –addstore –f root "C:\BEDROCK-ROOTBedrock Root Certificate Auth
 certutil.exe –addstore –f root "C:\BEDROCK-ROOT.crl"
 ```
 
-### Install ADCS Role for Subordinate CA
+### 8. Install ADCS Role for Subordinate CA
 
 ```powershell
 Add-WindowsFeature Adcs-Cert-Authority -IncludeManagementTools
 ```
 
-### Configure Subordinate CA
+### 9. Configure Subordinate CA
 
 ```powershell
 Install-AdcsCertificationAuthority -CAType EnterpriseSubordinateCA -CACommonName "Bedrock Enterprise Certificate Authority" -KeyLength 4096 -HashAlgorithm SHA256 -CryptoProviderName "RSA#Microsoft Software Key Storage Provider" -Force
 ```
 
-### Retrieve signed Subordinate CA Certificate
+### 10 .Retrieve signed Subordinate CA Certificate
 
 ```powershell
 certreq -retrieve 2 "C:\issuingCACert.crt"
 ```
 
-### Post Configuration of Suboardinate CA
+### 11. Post Configuration of Suboardinate CA
 
 ```powershell
 $crllist = Get-CACrlDistributionPoint; foreach ($crl in $crllist) {Remove-CACrlDistributionPoint $crl.uri -Force};
@@ -90,13 +90,13 @@ certutil.exe -setreg CA\AuditFilter 127
 restart-service certsvc
 ```
 
-### Publish CRL
+### 12. Publish CRL
 
 ```powershell
 certutil -crl
 ```
 
-### Copy AIA .crt to the webserver
+### 13. Copy AIA .crt to the webserver
 
 ```powershell
 copy "C:\Windows\System32\CertSrv\CertEnroll\issuingCA.bedrock.domain_Bedrock Enterprise Certificate Authority.crt" "\\WebServ1.bedrock.domain\pki\BEDROCK-ECABedrock Enterprise Certificate Authority.crt"
